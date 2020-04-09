@@ -406,9 +406,12 @@ function updateTsConfig(options: NormalizedSchema): Rule {
       return updateJsonInTree('tsconfig.json', json => {
         const c = json.compilerOptions;
         delete c.paths[options.name];
-        c.paths[`@${nxJson.npmScope}/${options.projectDirectory}`] = [
-          `libs/${options.projectDirectory}/src/index.ts`
-        ];
+
+        const pathName = options.publishable
+          ? `@${nxJson.npmScope}/${options.name}`
+          : `@${nxJson.npmScope}/${options.projectDirectory}`;
+
+        c.paths[pathName] = [`libs/${options.projectDirectory}/src/index.ts`];
         return json;
       })(host, context);
     }
